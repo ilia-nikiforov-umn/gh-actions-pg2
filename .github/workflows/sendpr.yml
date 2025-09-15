@@ -1,4 +1,7 @@
-on: release
+on: 
+  release:
+    types: [published]
+
 
 name: send-pr-on-release
 
@@ -12,7 +15,7 @@ jobs:
           fetch-depth: 0 # Checkout everything to get access to the tags
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-          token: ${{ secrets.ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send pull-request
         run: |
