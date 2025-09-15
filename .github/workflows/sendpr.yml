@@ -17,24 +17,25 @@ jobs:
       - name: Send pull-request
         run: |
           LATEST_TAG=$(git describe --tags --always --abbrev=0)
-          REPOSITORY="ilia-nikiforov-umn/gh-actions-playground"
-          FOLDER="bin/$REPOSITORY"
+          USER="ilia-nikiforov-umn"
+          REPOSITORY="gh-actions-playground"
           BRANCH_NAME="update-dependency-to-$LATEST_TAG"
 
           echo $LATEST_TAG
+          echo $USER
           echo $REPOSITORY
-          echo $FOLDER
           echo $BRANCH_NAME
 
           # Clone the remote repository and change working directory to the
           # folder it was cloned to.
-          git clone \
-            --depth=1 \
-            --branch=main \            
-            https://ilia-nikiforov-umn:${{ secrets.ACCESS_TOKEN }}@github.com/$REPOSITORY \
-            $FOLDER
+          
+          # Store the PAT in a file that can be accessed by the
+          # GitHub CLI.
+          echo "${{ secrets.ACCESS_TOKEN }}" > token.txt
+          gh auth login --with-token < token.txt
+          gh repo clone $USER/$REPOSITORY
 
-          cd $FOLDER
+          cd $REPOSITORY
 
           # Setup the committers identity.
           git config user.email "nikif002@gmail.com"
@@ -50,13 +51,9 @@ jobs:
           git commit -m "update dependency to $LATEST_TAG"
           git push origin $BRANCH_NAME
 
-          # Store the PAT in a file that can be accessed by the
-          # GitHub CLI.
-          echo "${{ secrets.ACCESS_TOKEN }}" > token.txt
 
           # Authorize GitHub CLI for the current repository and
           # create a pull-requests containing the updates.
-          gh auth login --with-token < token.txt
           gh pr create \
             --body "" \
             --title "update dependencies to $LATEST_TAG" \
