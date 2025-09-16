@@ -56,7 +56,7 @@ jobs:
           # Authorize GitHub CLI for the current repository and
           # create a pull-requests containing the updates.
           gh pr create \
-            --body "" \
+            --body " " \
             --title "update dependencies to $LATEST_TAG" \
             --head "$BRANCH_NAME" \
             --base "main"
