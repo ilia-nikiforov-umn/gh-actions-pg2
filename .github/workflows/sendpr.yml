@@ -33,12 +33,13 @@ jobs:
           # GitHub CLI.
           echo "${{ secrets.ACCESS_TOKEN }}" > token.txt
           gh auth login --with-token < token.txt
+          gh auth setup-git
           gh repo clone $USER/$REPOSITORY
 
           cd $REPOSITORY
 
           # Setup the committers identity.
-          git config user.email "nikif002@gmail.com"
+          git config user.email "nikif002@umn.com"
           git config user.name "ilia's robot"
 
           # Create a new feature branch for the changes.
